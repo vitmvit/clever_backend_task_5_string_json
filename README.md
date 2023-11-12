@@ -255,3 +255,27 @@ public class TestModel {
 ```
 
 Все представленные тестовые случаи проходят.
+
+### convertShouldReturnExpectedProductObject()
+
+Проверяет работу метода convert(String json, Class<T> clazz) класса JsonConverter
+
+Тестовые случаи
+
+1. На входе объект json объекта Product:
+
+```json
+{
+  "id": "611dada2-8138-11ee-b962-0242ac120002",
+  "name": "phone",
+  "price": 100.0
+}
+```
+
+На выходе объект Product:
+
+```
+Product(id=611dada2-8138-11ee-b962-0242ac120002, name=phone, price=100.0)
+```
+
+Данный тестовый случай проходит.
