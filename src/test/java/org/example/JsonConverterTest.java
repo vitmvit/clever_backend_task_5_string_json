@@ -18,9 +18,9 @@ public class JsonConverterTest {
 
     static Stream<Object> objectToConvert() {
         return Stream.of(
-                ModelUtils.getCustomer(),
                 ModelUtils.getProduct(),
                 ModelUtils.getOrder(),
+                ModelUtils.getCustomer(),
                 ModelUtils.getTestModel());
     }
 
