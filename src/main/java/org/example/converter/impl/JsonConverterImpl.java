@@ -18,24 +18,6 @@ public class JsonConverterImpl implements JsonConverter {
     private final StringBuilder json = new StringBuilder();
     private final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-    private static Map<String, Object> buildMap(String json) {
-        json = json.trim().replace("\n", "");
-        Map<String, Object> jsonMap = new LinkedHashMap<>();
-        if (json.startsWith("{") && json.endsWith("}")) {
-            String substring = json.substring(1, json.length() - 1);
-            String[] partArray = substring.split(",");
-            for (String pair : partArray) {
-                String[] keyValueArray = pair.split(":");
-                if (keyValueArray.length == 2) {
-                    String key = keyValueArray[0].trim().replace("\"", "");
-                    String value = keyValueArray[1].trim().replace("\"", "");
-                    jsonMap.put(key, value);
-                }
-            }
-        }
-        return jsonMap;
-    }
-
     /**
      * преобразование объекта в строку (json)
      */
@@ -144,6 +126,24 @@ public class JsonConverterImpl implements JsonConverter {
             }
         }
         return open == close;
+    }
+
+    private static Map<String, Object> buildMap(String json) {
+        json = json.trim().replace("\n", "");
+        Map<String, Object> jsonMap = new LinkedHashMap<>();
+        if (json.startsWith("{") && json.endsWith("}")) {
+            String substring = json.substring(1, json.length() - 1);
+            String[] partArray = substring.split(",");
+            for (String pair : partArray) {
+                String[] keyValueArray = pair.split(":");
+                if (keyValueArray.length == 2) {
+                    String key = keyValueArray[0].trim().replace("\"", "");
+                    String value = keyValueArray[1].trim().replace("\"", "");
+                    jsonMap.put(key, value);
+                }
+            }
+        }
+        return jsonMap;
     }
 
     private <T> T convert(Map<String, Object> map, Class<T> clazz) {

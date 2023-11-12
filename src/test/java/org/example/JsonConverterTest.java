@@ -20,17 +20,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class JsonConverterTest {
     private JsonConverterImpl jsonConverter;
 
+    @BeforeEach
+    public void setup() {
+        jsonConverter = new JsonConverterImpl();
+    }
+
     static Stream<Object> objectToConvert() {
         return Stream.of(
                 getProduct(),
                 ModelUtils.getOrder(),
                 ModelUtils.getCustomer(),
                 ModelUtils.getTestModel());
-    }
-
-    @BeforeEach
-    public void setup() {
-        jsonConverter = new JsonConverterImpl();
     }
 
     @ParameterizedTest
