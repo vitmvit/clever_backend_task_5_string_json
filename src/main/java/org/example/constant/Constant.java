@@ -11,6 +11,11 @@ public class Constant {
     public static final String NULL_VALUE_MESSAGE = "Shouldn't be null!";
     public static final String EXTRACT_VALUE_ERROR_MESSAGE = "Extract value error from: ";
     public static final String INITIALIZE_ERROR_MESSAGE = "Initialize object error!";
+    public static final String FIELD_NOT_FOUND_FOR_KEY_MESSAGE = "Field not found for key: ";
+    public static final String NOT_ENUM_TYPE_MESSAGE = "Provided field is not an enum type.";
+    public static final String INVALID_OFFSET_DATETIME_STRING_MESSAGE = "Invalid OffsetDateTime string: ";
+    public static final String INVALID_DATE_STRING_MESSAGE = "Invalid date string: ";
+    public static final String INVALID_UUID_STRING_MESSAGE = "Invalid UUID string: ";
 
     // structure
     public static final String PREFIX_GET = "get";

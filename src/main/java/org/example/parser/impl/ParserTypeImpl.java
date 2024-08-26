@@ -95,7 +95,7 @@ public class ParserTypeImpl implements ParserType {
         try {
             return UUID.fromString(value);
         } catch (IllegalArgumentException e) {
-            throw new JsonParseException("Invalid UUID string: " + value);
+            throw new JsonParseException(INVALID_UUID_STRING_MESSAGE + value);
         }
     }
 
@@ -110,7 +110,7 @@ public class ParserTypeImpl implements ParserType {
         try {
             return LocalDate.parse(value);
         } catch (Exception e) {
-            throw new JsonParseException("Invalid date string: " + value);
+            throw new JsonParseException(INVALID_DATE_STRING_MESSAGE + value);
         }
     }
 
@@ -125,7 +125,7 @@ public class ParserTypeImpl implements ParserType {
         try {
             return OffsetDateTime.parse(value);
         } catch (Exception e) {
-            throw new JsonParseException("Invalid OffsetDateTime string: " + value);
+            throw new JsonParseException(INVALID_OFFSET_DATETIME_STRING_MESSAGE + value);
         }
     }
 
@@ -246,7 +246,7 @@ public class ParserTypeImpl implements ParserType {
     public Enum<?> getEnum(String value, Field declaredField) {
         Class<?> enumClass = declaredField.getType();
         if (!enumClass.isEnum()) {
-            throw new JsonParseException("Provided field is not an enum type.");
+            throw new JsonParseException(NOT_ENUM_TYPE_MESSAGE);
         }
         return Arrays.stream(enumClass.getEnumConstants())
                 .filter(enumValue -> ((Enum<?>) enumValue).name().equals(value))

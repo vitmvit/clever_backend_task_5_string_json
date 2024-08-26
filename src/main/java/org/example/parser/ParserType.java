@@ -34,4 +34,3 @@ public interface ParserType {
 
     Enum<?> getEnum(String value, Field declaredField);
 }
-

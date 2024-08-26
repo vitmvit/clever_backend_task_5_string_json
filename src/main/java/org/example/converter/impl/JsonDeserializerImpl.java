@@ -25,6 +25,36 @@ import static org.example.util.StringUtil.isEmpty;
 public class JsonDeserializerImpl implements JsonDeserializer {
 
     /**
+     * Преобразует строку JSON в экземпляр указанного класса.
+     * <p>
+     * Этот метод разбирает предоставленную строку JSON в карту, создает новый экземпляр
+     * указанного класса и заполняет его поля значениями, извлеченными из карты JSON.
+     * Если любой ключ в JSON не соответствует полю класса, будет выброшено исключение
+     * {@link JsonDeserializationException}.
+     * </p>
+     *
+     * @param json  строка JSON, которая будет преобразована в объект.
+     * @param clazz класс создаваемого объекта.
+     * @return экземпляр указанного класса, заполненный значениями из строки JSON.
+     * @throws JsonDeserializationException если существует поле в JSON, которое не может быть установлено
+     *                                      в экземпляре класса.
+     */
+    @Override
+    public Object convert(String json, Class<?> clazz) {
+        Map<String, String> jsonMap = jsonToMapConvert(json);
+        Object object = createInstance(clazz);
+        ParserType parser = new ParserTypeImpl(this);
+        jsonMap.forEach((key, value) -> {
+            try {
+                setFieldValue(clazz, object, key, value, parser);
+            } catch (Exception e) {
+                throw new JsonDeserializationException(FIELD_NOT_FOUND_MESSAGE + key);
+            }
+        });
+        return object;
+    }
+
+    /**
      * Извлекает массив из строки JSON.
      *
      * <p>
@@ -62,36 +92,6 @@ public class JsonDeserializerImpl implements JsonDeserializer {
     }
 
     /**
-     * Преобразует строку JSON в экземпляр указанного класса.
-     * <p>
-     * Этот метод разбирает предоставленную строку JSON в карту, создает новый экземпляр
-     * указанного класса и заполняет его поля значениями, извлеченными из карты JSON.
-     * Если любой ключ в JSON не соответствует полю класса, будет выброшено исключение
-     * {@link JsonDeserializationException}.
-     * </p>
-     *
-     * @param json  строка JSON, которая будет преобразована в объект.
-     * @param clazz класс создаваемого объекта.
-     * @return экземпляр указанного класса, заполненный значениями из строки JSON.
-     * @throws JsonDeserializationException если существует поле в JSON, которое не может быть установлено
-     *                                      в экземпляре класса.
-     */
-    @Override
-    public Object convert(String json, Class<?> clazz) {
-        Map<String, String> jsonMap = jsonToMapConvert(json);
-        Object object = createInstance(clazz);
-        ParserType parser = new ParserTypeImpl(this);
-        jsonMap.forEach((key, value) -> {
-            try {
-                setFieldValue(clazz, object, key, value, parser);
-            } catch (Exception e) {
-                throw new JsonDeserializationException(FIELD_NOT_FOUND_MESSAGE + key);
-            }
-        });
-        return object;
-    }
-
-    /**
      * Устанавливает значение указанного поля объекта, преобразуя входное значение с помощью парсера.
      *
      * <p>
@@ -125,7 +125,7 @@ public class JsonDeserializerImpl implements JsonDeserializer {
             }
         }
         if (!fieldFound) {
-            throw new JsonDeserializationException("Field not found for key: " + key);
+            throw new JsonDeserializationException(FIELD_NOT_FOUND_FOR_KEY_MESSAGE + key);
         }
     }
 
@@ -244,7 +244,7 @@ public class JsonDeserializerImpl implements JsonDeserializer {
      * иначе оригинальная строка.
      */
     private String createValueField(String line) {
-        if (line.startsWith("\"") && line.endsWith("\"") && !line.contains("{") && !line.contains("[")) {
+        if (line.startsWith("\"") && line.endsWith("\"") && !line.contains(String.valueOf(LEFT_CURLY_BRACE)) && !line.contains(String.valueOf(LEFT_BRACKET))) {
             return line.replace("\"", "");
         }
         return line;
