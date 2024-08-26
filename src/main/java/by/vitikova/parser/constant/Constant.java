@@ -1,4 +1,4 @@
-package org.example.constant;
+package by.vitikova.parser.constant;
 
 public class Constant {
 
@@ -6,7 +6,6 @@ public class Constant {
     public static final String ERROR_ACCESSING_FIELDS_MESSAGE = "Error accessing object fields: ";
     public static final String GETTER_METHOD_NOT_FOUND_MESSAGE = "Getter method not found: ";
     public static final String FIELD_NOT_FOUND_MESSAGE = "Field not found: ";
-    public static final String OBJECT_GENERATION_ERROR_MESSAGE = "Object generation error!";
     public static final String INCORRECT_JSON_MESSAGE = "Incorrect json format!";
     public static final String NULL_VALUE_MESSAGE = "Shouldn't be null!";
     public static final String EXTRACT_VALUE_ERROR_MESSAGE = "Extract value error from: ";
@@ -51,5 +50,4 @@ public class Constant {
     public static final String SUBSTRING_ARRAY_PATTERN = ",(?=\\{)";
     public static final String COLLECTION_SPLIT_PATTERN = "(?<=\\}),(?=\\{)";
     public static final String MAP_PATTERN = ".*\\{.*\\{.*\\}.*\\}.*";
-
 }

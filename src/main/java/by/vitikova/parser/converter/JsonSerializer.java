@@ -1,4 +1,4 @@
-package org.example.converter;
+package by.vitikova.parser.converter;
 
 public interface JsonSerializer {
 

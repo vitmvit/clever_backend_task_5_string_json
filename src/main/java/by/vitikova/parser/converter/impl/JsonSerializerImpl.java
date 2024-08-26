@@ -1,15 +1,15 @@
-package org.example.converter.impl;
+package by.vitikova.parser.converter.impl;
 
-import org.example.converter.JsonSerializer;
-import org.example.exception.JsonSerializationException;
+import by.vitikova.parser.converter.JsonSerializer;
+import by.vitikova.parser.exception.JsonSerializationException;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 
-import static org.example.constant.Constant.*;
-import static org.example.util.JsonFieldUtil.getFieldName;
+import static by.vitikova.parser.constant.Constant.*;
+import static by.vitikova.parser.util.JsonFieldUtil.getFieldName;
 
 /**
  * Реализация интерфейса {@link JsonSerializer}, предоставляющая функциональность для сериализации объектов в формат JSON.

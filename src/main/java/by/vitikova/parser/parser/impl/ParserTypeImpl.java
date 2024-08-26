@@ -1,9 +1,9 @@
-package org.example.parser.impl;
+package by.vitikova.parser.parser.impl;
 
+import by.vitikova.parser.converter.JsonDeserializer;
+import by.vitikova.parser.exception.JsonParseException;
+import by.vitikova.parser.parser.ParserType;
 import lombok.AllArgsConstructor;
-import org.example.converter.JsonDeserializer;
-import org.example.exception.JsonParseException;
-import org.example.parser.ParserType;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -16,8 +16,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.example.constant.Constant.*;
-import static org.example.util.TypeUtil.*;
+import static by.vitikova.parser.constant.Constant.*;
+import static by.vitikova.parser.util.TypeUtil.*;
 
 @AllArgsConstructor
 public class ParserTypeImpl implements ParserType {
@@ -71,7 +71,7 @@ public class ParserTypeImpl implements ParserType {
      * @return число соответствующего типа, извлеченное из строки {@code value}.
      * @throws NumberFormatException если значение не может быть преобразовано в указанный числовой тип.
      */
-    public Object getNumber(String value, Class<?> type) {
+    private Object getNumber(String value, Class<?> type) {
         return switch (type.getSimpleName()) {
             case INTEGER_WRAPPER, INT_PRIMITIVE -> Integer.parseInt(value);
             case LONG_WRAPPER, LONG_PRIMITIVE -> Long.parseLong(value);
@@ -91,7 +91,7 @@ public class ParserTypeImpl implements ParserType {
      * @return объект UUID, созданный из строки {@code value}.
      * @throws IllegalArgumentException если {@code value} не является допустимым UUID.
      */
-    public UUID getUUID(String value) {
+    private UUID getUUID(String value) {
         try {
             return UUID.fromString(value);
         } catch (IllegalArgumentException e) {
@@ -106,7 +106,7 @@ public class ParserTypeImpl implements ParserType {
      * @return объект LocalDate, созданный из строки {@code value}.
      * @throws JsonParseException если {@code value} не соответствует формату даты.
      */
-    public LocalDate getLocalDate(String value) {
+    private LocalDate getLocalDate(String value) {
         try {
             return LocalDate.parse(value);
         } catch (Exception e) {
@@ -121,7 +121,7 @@ public class ParserTypeImpl implements ParserType {
      * @return объект OffsetDateTime, созданный из строки {@code value}.
      * @throws JsonParseException если {@code value} не соответствует формату даты и времени.
      */
-    public OffsetDateTime getOffsetDateTime(String value) {
+    private OffsetDateTime getOffsetDateTime(String value) {
         try {
             return OffsetDateTime.parse(value);
         } catch (Exception e) {
@@ -136,7 +136,7 @@ public class ParserTypeImpl implements ParserType {
      * @param declaredField поле класса, представляющее карту.
      * @return LinkedHashMap, созданная из строки.
      */
-    public LinkedHashMap<Object, String> getMap(String value, Field declaredField) {
+    private LinkedHashMap<Object, String> getMap(String value, Field declaredField) {
         if (value.matches(MAP_PATTERN)) {
             return getNestedMap(value, declaredField);
         } else {
@@ -151,7 +151,7 @@ public class ParserTypeImpl implements ParserType {
      * @param declaredField поле класса.
      * @return LinkedHashMap, созданная из строки.
      */
-    public LinkedHashMap<Object, String> getSimpleMap(String value, Field declaredField) {
+    private LinkedHashMap<Object, String> getSimpleMap(String value, Field declaredField) {
         return Arrays.stream(value.split("\\n"))
                 .map(this::cleanEntry)
                 .flatMap(Arrays::stream)
@@ -171,7 +171,7 @@ public class ParserTypeImpl implements ParserType {
      * @param declaredField поле класса.
      * @return LinkedHashMap, созданная из строки.
      */
-    public LinkedHashMap<Object, String> getNestedMap(String value, Field declaredField) {
+    private LinkedHashMap<Object, String> getNestedMap(String value, Field declaredField) {
         return value.lines()
                 .map(s -> s.substring(1, s.length() - 1))
                 .map(s -> s.split(COLON_STRING, 2))
@@ -190,7 +190,7 @@ public class ParserTypeImpl implements ParserType {
      * @param declaredField поле класса, представляющее коллекцию.
      * @return коллекция, созданная из строки.
      */
-    public Collection<Object> getCollection(String value, Field declaredField) {
+    private Collection<Object> getCollection(String value, Field declaredField) {
         Class<?> type = declaredField.getType();
         return switch (type.getName()) {
             case LIST_TYPE -> getCollectionStream(value, declaredField).toList();
@@ -206,7 +206,7 @@ public class ParserTypeImpl implements ParserType {
      * @param declaredField поле класса, представляющее коллекцию.
      * @return поток объектов, полученных из строки.
      */
-    public Stream<Object> getCollectionStream(String value, Field declaredField) {
+    private Stream<Object> getCollectionStream(String value, Field declaredField) {
         return Arrays.stream(value.split("\\n"))
                 .map(s -> s.replace(String.valueOf(LEFT_BRACKET), "")
                         .replace(String.valueOf(RIGHT_BRACKET), "")
@@ -224,7 +224,7 @@ public class ParserTypeImpl implements ParserType {
      * @param str           строковое значение.
      * @return преобразованный объект.
      */
-    public Object getGeneric(Field declaredField, String str) {
+    private Object getGeneric(Field declaredField, String str) {
         if (declaredField.getGenericType() instanceof ParameterizedType type) {
             Class<?> generic = (Class<?>) type.getActualTypeArguments()[0];
             if (Number.class.isAssignableFrom(generic)) {
@@ -243,7 +243,7 @@ public class ParserTypeImpl implements ParserType {
      * @param declaredField поле класса, представляющее перечисление.
      * @return найденное перечисление или исключение, если не найдено.
      */
-    public Enum<?> getEnum(String value, Field declaredField) {
+    private Enum<?> getEnum(String value, Field declaredField) {
         Class<?> enumClass = declaredField.getType();
         if (!enumClass.isEnum()) {
             throw new JsonParseException(NOT_ENUM_TYPE_MESSAGE);

@@ -1,4 +1,4 @@
-package org.example.exception;
+package by.vitikova.parser.exception;
 
 public class JsonSerializationException extends RuntimeException {
 

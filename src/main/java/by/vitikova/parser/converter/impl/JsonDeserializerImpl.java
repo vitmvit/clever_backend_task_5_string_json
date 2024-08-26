@@ -1,10 +1,10 @@
-package org.example.converter.impl;
+package by.vitikova.parser.converter.impl;
 
-import org.example.constant.Constant;
-import org.example.converter.JsonDeserializer;
-import org.example.exception.JsonDeserializationException;
-import org.example.parser.ParserType;
-import org.example.parser.impl.ParserTypeImpl;
+import by.vitikova.parser.constant.Constant;
+import by.vitikova.parser.converter.JsonDeserializer;
+import by.vitikova.parser.exception.JsonDeserializationException;
+import by.vitikova.parser.parser.ParserType;
+import by.vitikova.parser.parser.impl.ParserTypeImpl;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -13,10 +13,10 @@ import java.util.Map;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
-import static org.example.constant.Constant.*;
-import static org.example.util.CharUtil.*;
-import static org.example.util.JsonFieldUtil.getFieldName;
-import static org.example.util.StringUtil.isEmpty;
+import static by.vitikova.parser.constant.Constant.*;
+import static by.vitikova.parser.util.CharUtil.*;
+import static by.vitikova.parser.util.JsonFieldUtil.getFieldName;
+import static by.vitikova.parser.util.StringUtil.isEmpty;
 
 /**
  * Реализация интерфейса {@link JsonDeserializer}, предоставляющая функциональность для десериализации JSON-строк
@@ -40,9 +40,9 @@ public class JsonDeserializerImpl implements JsonDeserializer {
      *                                      в экземпляре класса.
      */
     @Override
-    public Object convert(String json, Class<?> clazz) {
+    public <T> T convert(String json, Class<T> clazz) {
         Map<String, String> jsonMap = jsonToMapConvert(json);
-        Object object = createInstance(clazz);
+        T object = createInstance(clazz);
         ParserType parser = new ParserTypeImpl(this);
         jsonMap.forEach((key, value) -> {
             try {
@@ -436,9 +436,9 @@ public class JsonDeserializerImpl implements JsonDeserializer {
      * @throws JsonDeserializationException если не удается инициализировать объект
      *                                      из-за проблем с доступом к конструктору.
      */
-    private Object createInstance(Class<?> clazz) {
+    private <T> T createInstance(Class<?> clazz) {
         try {
-            Constructor<?> constructor = clazz.getDeclaredConstructor();
+            Constructor<T> constructor = (Constructor<T>) clazz.getDeclaredConstructor();
             constructor.setAccessible(true);
             return constructor.newInstance();
         } catch (Exception e) {

@@ -1,6 +1,6 @@
-package org.example.util;
+package by.vitikova.parser.util;
 
-import static org.example.constant.Constant.*;
+import static by.vitikova.parser.constant.Constant.*;
 
 /**
  * Утилиты для работы с символами в контексте JSON.

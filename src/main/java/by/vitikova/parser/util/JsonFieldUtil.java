@@ -1,6 +1,6 @@
-package org.example.util;
+package by.vitikova.parser.util;
 
-import org.example.annotation.JsonField;
+import by.vitikova.parser.annotation.JsonField;
 
 import java.lang.reflect.Field;
 

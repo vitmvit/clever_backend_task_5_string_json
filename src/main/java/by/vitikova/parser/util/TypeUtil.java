@@ -1,4 +1,4 @@
-package org.example.util;
+package by.vitikova.parser.util;
 
 import java.time.OffsetDateTime;
 import java.util.Collection;
