@@ -2,22 +2,21 @@
 
 ## Задание
 
-- Создать любой gradle проект
-- Проект должен быть совместим с java 17
-- Придерживаться GitFlow: master -> develop -> feature/fix
-- Разработать библиотеку, которая будет формировать на основе Java класса json и обратно
-- Использовать рефлексию
-- Предусмотреть возможную вложенность объектов (рекурсия), смотрите приложение I
-- Покрыть код unit tests (можно использовать jackson/gson)
-- Использовать lombok
-
+- Создать любой gradle проект;
+- Проект должен быть совместим с java 17;
+- Придерживаться GitFlow: master -> develop -> feature/fix;
+- Разработать библиотеку, которая будет формировать на основе Java класса json и обратно;
+- Использовать рефлексию;
+- Предусмотреть возможную вложенность объектов (рекурсия);
+- Реализовать кастомную аннотацию @JsonField, которая будет использоваться для задания имени поля в JSON, если оно
+  отличается от имени поля в классе;
+- Покрыть код unit tests (можно использовать jackson/gson);
+- Использовать lombok.
 ---
 
-## Тестирование
+## Реализация
 
-### convertShouldReturnExpectedJson(Object object)
-
-Проверяет работу метода convert(Object object) класса JsonConverter
+### Из объекта в json
 
 Тестовые случаи
 
@@ -36,7 +35,7 @@ public class Product {
 
 ```json
 {
-  "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
+  "id": "611dada2-8138-11ee-b962-0242ac120002",
   "name": "phone",
   "price": 100.0
 }
@@ -89,19 +88,14 @@ public class Customer {
   "id": "c3323c32-80c1-11ee-b962-0242ac120002",
   "firstName": "firstName",
   "lastName": "LastName",
-  "dateBirth": "2023-11-12",
+  "dateBirth": "2024-08-26",
   "orders": [
     {
       "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
       "products": [
         {
-          "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
+          "id": "611dada2-8138-11ee-b962-0242ac120002",
           "name": "phone",
-          "price": 100.0
-        },
-        {
-          "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
-          "name": "car",
           "price": 100.0
         }
       ],
@@ -111,13 +105,8 @@ public class Customer {
       "id": "3a53130e-80c1-11ee-b962-0242ac120002",
       "products": [
         {
-          "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
+          "id": "611dada2-8138-11ee-b962-0242ac120002",
           "name": "phone",
-          "price": 100.0
-        },
-        {
-          "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
-          "name": "car",
           "price": 100.0
         }
       ],
@@ -131,19 +120,20 @@ public class Customer {
 
 ```java
 public class TestModel {
-    private byte byteField;
-    private short shortField;
-    private long longField;
-    private int intField;
-    private double doubleField;
-    private float floatField;
-    private boolean booleanField;
-    private Integer integerField;
-    private BigInteger bigIntegerField;
-    private Product product1;
-    private Customer customer;
-    private List<Order> orderList;
-    private List<Product> productList;
+
+  private byte byteField;
+  private short shortField;
+  private long longField;
+  private int intField;
+  private double doubleField;
+  private float floatField;
+  private boolean booleanField;
+  private Integer integerField;
+  private BigInteger bigIntegerField;
+  private Product product;
+  private Customer customer;
+  private List<Order> orderList;
+  private List<Product> productList;
 }
 ```
 
@@ -160,8 +150,8 @@ public class TestModel {
   "booleanField": true,
   "integerField": 42,
   "bigIntegerField": 1234567,
-  "product1": {
-    "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
+  "product": {
+    "id": "611dada2-8138-11ee-b962-0242ac120002",
     "name": "phone",
     "price": 100.0
   },
@@ -169,19 +159,14 @@ public class TestModel {
     "id": "c3323c32-80c1-11ee-b962-0242ac120002",
     "firstName": "firstName",
     "lastName": "LastName",
-    "dateBirth": "2023-11-12",
+    "dateBirth": "2024-08-26",
     "orders": [
       {
         "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
         "products": [
           {
-            "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
+            "id": "611dada2-8138-11ee-b962-0242ac120002",
             "name": "phone",
-            "price": 100.0
-          },
-          {
-            "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
-            "name": "car",
             "price": 100.0
           }
         ],
@@ -191,13 +176,8 @@ public class TestModel {
         "id": "3a53130e-80c1-11ee-b962-0242ac120002",
         "products": [
           {
-            "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
+            "id": "611dada2-8138-11ee-b962-0242ac120002",
             "name": "phone",
-            "price": 100.0
-          },
-          {
-            "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
-            "name": "car",
             "price": 100.0
           }
         ],
@@ -210,13 +190,8 @@ public class TestModel {
       "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
       "products": [
         {
-          "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
+          "id": "611dada2-8138-11ee-b962-0242ac120002",
           "name": "phone",
-          "price": 100.0
-        },
-        {
-          "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
-          "name": "car",
           "price": 100.0
         }
       ],
@@ -226,13 +201,8 @@ public class TestModel {
       "id": "3a53130e-80c1-11ee-b962-0242ac120002",
       "products": [
         {
-          "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
+          "id": "611dada2-8138-11ee-b962-0242ac120002",
           "name": "phone",
-          "price": 100.0
-        },
-        {
-          "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
-          "name": "car",
           "price": 100.0
         }
       ],
@@ -241,24 +211,15 @@ public class TestModel {
   ],
   "productList": [
     {
-      "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
+      "id": "611dada2-8138-11ee-b962-0242ac120002",
       "name": "phone",
-      "price": 100.0
-    },
-    {
-      "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
-      "name": "car",
       "price": 100.0
     }
   ]
 }
 ```
 
-Все представленные тестовые случаи проходят.
-
-### convertShouldReturnExpectedProductObject()
-
-Проверяет работу метода convert(String json, Class<T> clazz) класса JsonConverter
+### Из json в объект
 
 Тестовые случаи
 
@@ -278,4 +239,153 @@ public class TestModel {
 Product(id=611dada2-8138-11ee-b962-0242ac120002, name=phone, price=100.0)
 ```
 
-Данный тестовый случай проходит.
+2. На входе объект json объекта Order:
+
+```json
+{
+  "id": "c2a5102a-80c4-11ee-b962-0242ac120002",
+  "products": [
+    {
+      "id": "b2e10b3a-80c4-11ee-b962-0242ac120002",
+      "name": "phone",
+      "price": 100.0
+    }
+  ],
+  "createDate": "2015-10-18T11:20:30.000001-05:00"
+}
+```
+
+На выходе объект Order:
+
+```
+Order(id=c2a5102a-80c4-11ee-b962-0242ac120002, products=[Product(id=b2e10b3a-80c4-11ee-b962-0242ac120002, name=phone, price=100.0)], createDate=2015-10-18T11:20:30.000001-05:00)
+```
+
+3. На входе объект json объекта Customer:
+
+```json
+{
+  "id": "c3323c32-80c1-11ee-b962-0242ac120002",
+  "firstName": "firstName",
+  "lastName": "LastName",
+  "dateBirth": "2024-08-26",
+  "orders": [
+    {
+      "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
+      "products": [
+        {
+          "id": "611dada2-8138-11ee-b962-0242ac120002",
+          "name": "phone",
+          "price": 100.0
+        }
+      ],
+      "createDate": "2015-10-18T11:20:30.000001-05:00"
+    },
+    {
+      "id": "3a53130e-80c1-11ee-b962-0242ac120002",
+      "products": [
+        {
+          "id": "611dada2-8138-11ee-b962-0242ac120002",
+          "name": "phone",
+          "price": 100.0
+        }
+      ],
+      "createDate": "2014-11-14T10:23:37.000001-03:00"
+    }
+  ]
+}
+```
+
+На выходе объект Customer:
+
+```
+Customer(id=c3323c32-80c1-11ee-b962-0242ac120002, firstName=firstName, lastName=LastName, dateBirth=2024-08-26, orders=[Order(id=ba5d110e-80c1-11ee-b962-0242ac120002, products=[Product(id=611dada2-8138-11ee-b962-0242ac120002, name=phone, price=100.0)], createDate=2015-10-18T11:20:30.000001-05:00), Order(id=3a53130e-80c1-11ee-b962-0242ac120002, products=[Product(id=611dada2-8138-11ee-b962-0242ac120002, name=phone, price=100.0)], createDate=2014-11-14T10:23:37.000001-03:00)])
+```
+
+4. На входе объект json объекта TestModel:
+
+```json
+{
+  "byteField": 10,
+  "shortField": 100,
+  "longField": 1000,
+  "intField": 10000,
+  "doubleField": 3.14,
+  "floatField": 2.718,
+  "booleanField": true,
+  "integerField": 42,
+  "bigIntegerField": 1234567,
+  "product": {
+    "id": "611dada2-8138-11ee-b962-0242ac120002",
+    "name": "phone",
+    "price": 100.0
+  },
+  "customer": {
+    "id": "c3323c32-80c1-11ee-b962-0242ac120002",
+    "firstName": "firstName",
+    "lastName": "LastName",
+    "dateBirth": "2024-08-26",
+    "orders": [
+      {
+        "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
+        "products": [
+          {
+            "id": "611dada2-8138-11ee-b962-0242ac120002",
+            "name": "phone",
+            "price": 100.0
+          }
+        ],
+        "createDate": "2015-10-18T11:20:30.000001-05:00"
+      },
+      {
+        "id": "3a53130e-80c1-11ee-b962-0242ac120002",
+        "products": [
+          {
+            "id": "611dada2-8138-11ee-b962-0242ac120002",
+            "name": "phone",
+            "price": 100.0
+          }
+        ],
+        "createDate": "2014-11-14T10:23:37.000001-03:00"
+      }
+    ]
+  },
+  "orderList": [
+    {
+      "id": "ba5d110e-80c1-11ee-b962-0242ac120002",
+      "products": [
+        {
+          "id": "611dada2-8138-11ee-b962-0242ac120002",
+          "name": "phone",
+          "price": 100.0
+        }
+      ],
+      "createDate": "2015-10-18T11:20:30.000001-05:00"
+    },
+    {
+      "id": "3a53130e-80c1-11ee-b962-0242ac120002",
+      "products": [
+        {
+          "id": "611dada2-8138-11ee-b962-0242ac120002",
+          "name": "phone",
+          "price": 100.0
+        }
+      ],
+      "createDate": "2014-11-14T10:23:37.000001-03:00"
+    }
+  ],
+  "productList": [
+    {
+      "id": "611dada2-8138-11ee-b962-0242ac120002",
+      "name": "phone",
+      "price": 100.0
+    }
+  ]
+}
+```
+
+На выходе объект TestModel:
+
+```
+TestModel(byteField=10, shortField=100, longField=1000, intField=10000, doubleField=3.14, floatField=2.718, booleanField=true, integerField=42, bigIntegerField=1234567, product=Product(id=611dada2-8138-11ee-b962-0242ac120002, name=phone, price=100.0), customer=Customer(id=c3323c32-80c1-11ee-b962-0242ac120002, firstName=firstName, lastName=LastName, dateBirth=2024-08-26, orders=[Order(id=ba5d110e-80c1-11ee-b962-0242ac120002, products=[Product(id=611dada2-8138-11ee-b962-0242ac120002, name=phone, price=100.0)], createDate=2015-10-18T11:20:30.000001-05:00), Order(id=3a53130e-80c1-11ee-b962-0242ac120002, products=[Product(id=611dada2-8138-11ee-b962-0242ac120002, name=phone, price=100.0)], createDate=2014-11-14T10:23:37.000001-03:00)]), orderList=[Order(id=ba5d110e-80c1-11ee-b962-0242ac120002, products=[Product(id=611dada2-8138-11ee-b962-0242ac120002, name=phone, price=100.0)], createDate=2015-10-18T11:20:30.000001-05:00), Order(id=3a53130e-80c1-11ee-b962-0242ac120002, products=[Product(id=611dada2-8138-11ee-b962-0242ac120002, name=phone, price=100.0)], createDate=2014-11-14T10:23:37.000001-03:00)], productList=[Product(id=611dada2-8138-11ee-b962-0242ac120002, name=phone, price=100.0)])
+```

@@ -1,14 +1,16 @@
-package org.example.model;
+package by.vitikova.parser.model;
 
 import lombok.*;
 
 import java.util.UUID;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
+@NoArgsConstructor
+@EqualsAndHashCode
+@AllArgsConstructor
 public class Product {
 
     private UUID id;
